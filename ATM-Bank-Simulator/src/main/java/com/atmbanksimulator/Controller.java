@@ -35,6 +35,12 @@ public class Controller {
             case "Bal":
                 UIModel.processBalance();
                 break;
+            case "Stmt":
+                UIModel.processMiniStatement();
+                break;
+            case "ChangeAccount":
+                UIModel.processChangeAccount();
+                break;
             case "Fin":
                 UIModel.processFinish();
                 break;
@@ -51,5 +57,3 @@ public class Controller {
     }
 
 }
-
-

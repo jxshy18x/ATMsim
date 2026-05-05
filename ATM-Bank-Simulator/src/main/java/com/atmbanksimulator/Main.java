@@ -17,19 +17,22 @@ public class Main extends Application {
         ATMNoise.start("Global.wav");
         // Create a Bank object add two bank accounts for test
         Bank bank = new Bank();
+        bank.loadData();
 
-        // These are Standard bank accounts that have been created and added to the bank
-        bank.addBankAccount(bank.makeBankAccount("10001", "11111", 100));
-        bank.addBankAccount(bank.makeBankAccount("10002", "22222", 50));
+        if (!bank.hasAccounts()) {
+            // These are Standard bank accounts that have been created and added to the bank
+            bank.addBankAccount(bank.makeBankAccount("10001", "11111", 100));
+            bank.addBankAccount(bank.makeBankAccount("10002", "22222", 50));
 
-        // Creating a Student account and adding to the bank
-        bank.addBankAccount(bank.makeStudentAccount("10003", "33333", 200));
+            // Creating a Student account and adding to the bank
+            bank.addBankAccount(bank.makeStudentAccount("10003", "33333", 200));
 
-        // Creating a Prime account and adding to the bank
-        bank.addBankAccount(bank.makePrimeAccount("10004", "44444", 300));
+            // Creating a Prime account and adding to the bank
+            bank.addBankAccount(bank.makePrimeAccount("10004", "44444", 300));
 
-        // Creating a Saving account and adding to the bank
-        bank.addBankAccount(bank.makeSavingAccount("10005", "55555", 500));
+            // Creating a Saving account and adding to the bank
+            bank.addBankAccount(bank.makeSavingAccount("10005", "55555", 500));
+        }
 
 
         //UIModel-View-Controller structure setup

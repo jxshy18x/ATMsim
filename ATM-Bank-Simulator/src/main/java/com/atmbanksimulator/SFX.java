@@ -8,7 +8,7 @@ public class SFX {
     public static void playSFX(String fileName) { // Static method that plays SFX based on file name.
         try {
             if (muted) return;
-            URL url = SFX.class.getResource("/com/atmbanksimulator/SFX/" + fileName); /* Gets the location
+            URL url = SFX.class.getResource("/com/atmbanksimulator/sfx/" + fileName); /* Gets the location
             of SFX file based on the name of the file. */
 
             AudioInputStream audio = AudioSystem.getAudioInputStream(url); /* Loads the file so it's ready to

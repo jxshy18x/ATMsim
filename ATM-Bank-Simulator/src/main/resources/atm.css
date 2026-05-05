@@ -1,19 +1,23 @@
 #Layout {
     -fx-grid-lines-visible: false;
-    -fx-hgap: 5;
-    -fx-vgap: 5;
-    -fx-padding: 10;
+    -fx-hgap: 12;
+    -fx-vgap: 12;
+    -fx-padding: 20;
 }
 
 #Buttons {
     -fx-pref-columns: 6;
-    -fx-pref-tile-width: 75;
-    -fx-hgap: 5;
-    -fx-vgap: 5;
+    -fx-pref-tile-width: 95;
+    -fx-pref-tile-height: 54;
+    -fx-hgap: 8;
+    -fx-vgap: 8;
 }
 
 .button {
-    -fx-font: bold 16pt "courier new";
+    -fx-font: bold 14pt "courier new";
+    -fx-min-width: 92;
+    -fx-min-height: 42;
+    -fx-padding: 8 12;
 }
 
 .label {
@@ -23,8 +27,11 @@
 
 .text-field {
     -fx-font: bold 14pt "Courier New"; /* or any font size you want */
+    -fx-pref-height: 42;
 }
 
 .text-area {
     -fx-font: bold 14pt "Courier New"; /* or any font size you want */
+    -fx-pref-width: 700;
+    -fx-pref-height: 190;
 }

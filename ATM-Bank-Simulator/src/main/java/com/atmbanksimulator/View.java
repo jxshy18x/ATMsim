@@ -31,8 +31,8 @@ class View {
     private Scene changePasswordScene;
     private Scene createAccountScene;
     private Stage window;
-    int H = 500;
-    int W = 500;
+    int H = 620;
+    int W = 760;
     Controller controller;
     private Label laMsg;
     private TextField tfInput;
@@ -72,6 +72,8 @@ class View {
         Button var10 = new Button("Transfer");
         Button var11 = new Button("Change Password");
         Button var12 = new Button("New Account");
+        Button var13x = new Button("Mini Statement");
+        Button var13y = new Button("Change Account");
         Label var13 = new Label("Transfer Money");
         Button var14 = new Button("Back");
         var14.setOnAction((var2x) -> var1.setScene(this.atmScene));
@@ -109,22 +111,17 @@ class View {
 
         });
         var12.setOnAction((var2x) -> var1.setScene(this.createAccountScene));
-        TilePane var17 = new TilePane();
-        var17.setId("Buttons");
-        String[][] var18 = new String[][]{{"7", "8", "9", "", "Dep", ""}, {"4", "5", "6", "", "W/D", ""}, {"1", "2", "3", "", "Bal", "Fin"}, {"CLR", "0", "", "", "", "Ent"}};
-
-        for(String[] var22 : var18) {
-            for(String var26 : var22) {
-                if (var26.length() >= 1) {
-                    Button var27 = new Button(var26);
-                    var27.setOnAction(this::buttonClicked);
-                    var17.getChildren().add(var27);
-                } else {
-                    var17.getChildren().add(new Text());
-                }
-            }
-        }
-
+        var13x.setOnAction((var2x) -> this.controller.process("Stmt"));
+        var13y.setOnAction((var2x) -> {
+            this.controller.process("ChangeAccount");
+            var1.setScene(this.atmScene);
+            this.transferInput.setText("");
+            this.transferResult.setText("");
+            this.transferState = "account";
+            this.recipientAccount = "";
+            this.atmScene.getRoot().requestFocus();
+        });
+        TilePane var17 = this.createKeypad();
         var9.add(var17, 0, 3);
         this.transferScene = new Scene(var9, (double)this.W, (double)this.H);
         this.transferScene.getStylesheets().add("atm.css");
@@ -157,33 +154,20 @@ class View {
         });
         this.grid = new GridPane();
         this.grid.setId("Layout");
-        this.buttonPane = new TilePane();
-        this.buttonPane.setId("Buttons");
+        this.buttonPane = this.createKeypad();
         this.laMsg = new Label("Welcome to Bank-ATM");
-        FlowPane var32 = new FlowPane((double)10.0F, (double)6.0F, new Node[]{this.laMsg, var31, var10, var11, var12});
+        FlowPane var32 = new FlowPane((double)10.0F, (double)6.0F, new Node[]{this.laMsg, var31, var10, var11, var12, var13x, var13y});
         this.grid.add(var32, 0, 0);
         this.tfInput = new TextField();
         this.tfInput.setEditable(false);
         this.grid.add(this.tfInput, 0, 1);
         this.taResult = new TextArea();
         this.taResult.setEditable(false);
+        this.taResult.setPrefRowCount(7);
         this.scrollPane = new ScrollPane();
         this.scrollPane.setContent(this.taResult);
+        this.scrollPane.setFitToWidth(true);
         this.grid.add(this.scrollPane, 0, 2);
-        String[][] var10000 = new String[][]{{"7", "8", "9", "", "Dep", ""}, {"4", "5", "6", "", "W/D", ""}, {"1", "2", "3", "", "Bal", "Fin"}, {"CLR", "0", "", "", "", "Ent"}};
-
-        for(String[] var36 : var18) {
-            for(String var29 : var36) {
-                if (var29.length() >= 1) {
-                    Button var30 = new Button(var29);
-                    var30.setOnAction(this::buttonClicked);
-                    this.buttonPane.getChildren().add(var30);
-                } else {
-                    this.buttonPane.getChildren().add(new Text());
-                }
-            }
-        }
-
         this.grid.add(this.buttonPane, 0, 3);
         this.atmScene = new Scene(this.grid, (double)this.W, (double)this.H);
         this.atmScene.getStylesheets().add("atm.css");
@@ -231,7 +215,11 @@ class View {
         Button var7 = new Button("Change");
         var7.setOnAction((var4x) -> {
             String var5x = this.controller.UIModel.changePassword(var4.getText(), var5.getText());
-            var6.setText(var5x + "\n" + Bank.getPasswordRulesMessage());
+            if (var5x.equals("Password changed successfully.") || var5x.equals(Bank.getPasswordRulesMessage())) {
+                var6.setText(var5x);
+            } else {
+                var6.setText(var5x + "\n" + Bank.getPasswordRulesMessage());
+            }
             var4.clear();
             var5.clear();
         });
@@ -267,12 +255,14 @@ class View {
         Button var9 = new Button("Create");
         var9.setOnAction((var6x) -> {
             String var7x = this.controller.UIModel.createNewAccount(var4.getText(), var5.getText(), var6.getText(), (String)var7.getValue());
-            var8.setText(var7x + "\nAccount number must be exactly 5 digits.\n" + Bank.getPasswordRulesMessage());
             if (var7x.startsWith((String)var7.getValue() + " account ")) {
+                var8.setText(var7x);
                 var4.clear();
                 var5.clear();
                 var6.setText("0");
                 var7.setValue("Standard");
+            } else {
+                var8.setText(var7x + "\nAccount number must be between 10000 and 10099.\n" + Bank.getPasswordRulesMessage());
             }
 
         });
@@ -289,6 +279,26 @@ class View {
         var1.setVgap((double)10.0F);
         var1.setPadding(new Insets((double)15.0F));
         return var1;
+    }
+
+    private TilePane createKeypad() {
+        TilePane keypad = new TilePane();
+        keypad.setId("Buttons");
+        String[][] buttons = new String[][]{{"7", "8", "9", "", "Dep", ""}, {"4", "5", "6", "", "W/D", ""}, {"1", "2", "3", "", "Bal", "Fin"}, {"CLR", "0", "", "", "", "Ent"}};
+
+        for(String[] row : buttons) {
+            for(String label : row) {
+                if (label.length() >= 1) {
+                    Button button = new Button(label);
+                    button.setOnAction(this::buttonClicked);
+                    keypad.getChildren().add(button);
+                } else {
+                    keypad.getChildren().add(new Text());
+                }
+            }
+        }
+
+        return keypad;
     }
 
     private void buttonClicked(ActionEvent var1) {
@@ -312,9 +322,9 @@ class View {
                         this.transferResult.setText("Account not found, try again!");
                     }
                 } else if (this.transferState.equals("amount")) {
-                    int var6 = Integer.parseInt(var4);
+                    int var6 = this.parseTransferAmount(var4);
                     if (this.controller.UIModel.processTransfer(this.recipientAccount, var6)) {
-                        this.transferResult.setText("Transfer successful!\n£" + var6 + " sent to " + this.recipientAccount);
+                        this.transferResult.setText("Transfer successful!\n£" + var6 + " sent to " + this.recipientAccount + this.controller.UIModel.getLowBalanceWarning());
                     } else {
                         this.transferResult.setText("Transfer failed! Insufficient funds.");
                     }
@@ -322,12 +332,24 @@ class View {
                     this.transferInput.setText("");
                     this.transferState = "account";
                 }
+            } else if (var3.matches("\\d")) {
+                this.transferInput.setText(this.transferInput.getText() + var3);
+            } else if (var3.equals("CLR")) {
+                this.transferInput.setText("");
             } else {
-                this.controller.process(var3);
+                this.transferResult.setText("Enter a recipient account number or transfer amount.");
             }
 
         } else {
             this.controller.process(var3);
+        }
+    }
+
+    private int parseTransferAmount(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException var2) {
+            return 0;
         }
     }
 

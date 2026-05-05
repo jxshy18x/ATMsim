@@ -6,35 +6,41 @@
 package com.atmbanksimulator;
 
 public class BankAccount {
-    private String accNumber = "";
-    private String accPasswd = "";
+    private final String accNumber;
+    private String accPasswd;
     private int balance = 0;
 
-    public BankAccount() {
+    public BankAccount(String accountNumber, String password, int initialBalance) {
         super();
+        if (accountNumber == null || accountNumber.isEmpty()) {
+            throw new IllegalArgumentException("Account number cannot be empty.");
+        }
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty.");
+        }
+        if (initialBalance < 0) {
+            throw new IllegalArgumentException("Initial balance cannot be negative.");
+        }
+
+        this.accNumber = accountNumber;
+        this.accPasswd = password;
+        this.balance = initialBalance;
     }
 
-    public BankAccount(String var1, String var2, int var3) {
-        super();
-        this.accNumber = var1;
-        this.accPasswd = var2;
-        this.balance = var3;
-    }
-
-    public boolean withdraw(int var1) {
-        if (var1 >= 0 && this.balance >= var1) {
-            this.balance -= var1;
+    public boolean withdraw(int amount) {
+        if (amount > 0 && this.balance >= amount) {
+            this.balance -= amount;
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean deposit(int var1) {
-        if (var1 < 0) {
+    public boolean deposit(int amount) {
+        if (amount <= 0) {
             return false;
         } else {
-            this.balance += var1;
+            this.balance += amount;
             return true;
         }
     }
@@ -47,11 +53,15 @@ public class BankAccount {
         return this.accNumber;
     }
 
-    public String getaccPasswd() {
+    public String getAccPasswd() {
         return this.accPasswd;
     }
 
-    public void setAccPasswd(String var1) {
-        this.accPasswd = var1;
+    public void setAccPasswd(String password) {
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty.");
+        }
+
+        this.accPasswd = password;
     }
 }

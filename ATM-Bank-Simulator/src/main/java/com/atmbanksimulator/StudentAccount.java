@@ -1,7 +1,5 @@
 package com.atmbanksimulator;
 
-import java.util.HashMap;
-
 public class StudentAccount extends BankAccount { // Creating prime account with additional withdrawl rules.
 
     public StudentAccount(String a, String p, int b) { /* Calls BankAccount constructor and passes account number,

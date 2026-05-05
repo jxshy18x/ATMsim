@@ -70,9 +70,9 @@ public class UIModel {
     public void processEnter() {
         switch (this.state) {
             case "account_no":
-                if (this.numberPadInput.equals("")) {
+                if (this.numberPadInput.equals("") || this.bank.findBankAccount(this.numberPadInput) == null) {
                     SFX.playSFX("Error.wav");
-                    this.message = "Invalid Account Number";
+                    this.message = "Unknown Account Number";
                     this.reset(this.message);
                 } else {
                     this.accNumber = this.numberPadInput;
@@ -181,7 +181,7 @@ public class UIModel {
                 int var2 = Integer.parseInt(this.Confirmation.split(":")[1]);
                 if (this.bank.withdraw(var2)) {
                     SFX.playSFX("Withdrawl.wav");
-                    this.message = "Withdraw successful";
+                    this.message = "Withdraw successful" + this.bank.getLowBalanceWarning();
                 } else {
                     this.message = "Withdraw failed";
                 }
@@ -210,6 +210,16 @@ public class UIModel {
         this.update();
     }
 
+    public void processChangeAccount() {
+        this.bank.logout();
+        this.accNumber = "";
+        this.accPasswd = "";
+        this.Confirmation = "";
+        this.reset("Ready for next account");
+        this.result = this.bank.getAccountOptions() + "\n\nEnter your account number\nFollowed by \"Ent\"";
+        this.update();
+    }
+
     public void processUnknownKey(String var1) {
         SFX.playSFX("Error.wav");
         this.reset("Invalid Command");
@@ -230,6 +240,23 @@ public class UIModel {
 
     public boolean processTransfer(String var1, int var2) {
         return var2 <= 0 ? false : this.bank.transfer(var1, var2);
+    }
+
+    public String getLowBalanceWarning() {
+        return this.bank.getLowBalanceWarning();
+    }
+
+    public void processMiniStatement() {
+        if (this.state.equals("logged_in")) {
+            this.numberPadInput = "";
+            this.message = "Mini Statement";
+            this.result = this.bank.getMiniStatement();
+        } else {
+            SFX.playSFX("Error.wav");
+            this.reset("You are not logged in");
+        }
+
+        this.update();
     }
 
     public String changePassword(String var1, String var2) {

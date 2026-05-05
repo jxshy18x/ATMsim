@@ -10,10 +10,10 @@ public class ATMNoise {
 
     public static void start(String fileName) {
         try {
-            if (clip != null && clip.isRunning()) return; /* Prevents background sfx from restarting if its already
+            if (clip != null && clip.isRunning()) return; /* Prevents background sfx from restarting if it is already
              active. */
 
-            URL url = ATMNoise.class.getResource("/com/atmbanksimulator/SFX/" + fileName); /* Finding the
+            URL url = ATMNoise.class.getResource("/com/atmbanksimulator/sfx/" + fileName); /* Finding the
             location of the sfx in the project. */
 
             AudioInputStream audio = AudioSystem.getAudioInputStream(url); // Loads sfx file to be played.
